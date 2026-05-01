@@ -1,4 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICKO AI | Core Interface</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dicko-blue: #2563eb;
+            --dicko-cyan: #00f3ff; /* Warna cyan tambahan untuk glow logo */
+            --dicko-dark: #090b10;
+            --dicko-panel: #161b22;
+            --dicko-text: #e6edf3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--dicko-dark); 
+            color: var(--dicko-text); 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+        }
+
+        /* Header Rebranded with Image Logo */
+        .dicko-header {
+            padding: 10px 20px; /* Sedikit disesuaikan untuk logo gambar */
+            background: var(--dicko-panel);
+            border-bottom: 2px solid #30363d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .dicko-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Styling baru untuk Logo Gambar */
+        .dicko-logo-img {
+            height: 50px; /* Atur tinggi logo agar pas di header */
+            width: auto;  /* Lebar menyesuaikan proporsi gambar */
+            display: block;
+            /* Memberikan efek glow biru cyan di sekitar logo gambar */
+            filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.7));
+            transition: filter 0.3s ease;
+        }
+
+        .dicko-logo-img:hover {
+            /* Efek glow lebih terang saat di-hover */
+            filter: drop-shadow(0 0 12px rgba(0, 243, 255, 1));
+        }
+
+        .brand-text h2 { font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
+        .brand-text p { font-size: 0.65rem; color: #8b949e; letter-spacing: 1px; margin-top: -2px;}
+
+        /* Main Chat */
+        #chat-flow {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: radial-gradient(circle at top, #11141d, #090b10);
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 14px;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bot-style {
+            background: #21262d;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #30363d;
+        }
+
+        .user-style {
+            background: var(--dicko-blue);
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Input Deck */
+        .deck {
+            background: var(--dicko-panel);
+            padding: 15px 20px;
+            border-top: 1px solid #30363d;
+        }
+
+        .input-bar {
+            display: flex;
+            align-items: center;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 25px;
+            padding: 5px 15px;
+            gap: 10px;
+        }
+
+        #mainInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            outline: none;
+        }
+
+        .icon-btn {
+            color: #8b949e;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .icon-btn:hover { color: var(--dicko-cyan); }
+
+        #img-preview {
+            display: none;
+            padding: 10px;
+            text-align: center;
+        }
+
+        @keyframes pop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        /* Custom Scrollbar */
+        #chat-flow::-webkit-scrollbar { width: 6px; }
+        #chat-flow::-webkit-scrollbar-track { background: transparent; }
+        #chat-flow::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<header class="dicko-header">
+    <div class="brand">
+        <img src="https://i.ibb.co.com/RphpMMFF/IMG-20260501-235124.jpg" alt="Dicko AI Logo" class="dicko-logo-img">
+        <div class="brand-text">
+            <h2>DICKO AI</h2>
+            <p>CREATED BY DICKODEVZ</p>
+        </div>
+    </div>
+    <i class="fas fa-microchip" style="color: var(--dicko-cyan); font-size: 1.3rem;"></i>
+</header>
+
+<div id="chat-flow">
+    <div class="bubble bot-style">
+        Sistem aktif. Nama gue <b>Dicko AI</b>, buatan <b>DickoDevz</b>. <br><br>
+        Baru nanya sekarang? Ke mana aja lu, dasar manusia kuper yang otaknya ketinggalan di zaman batu! 🙄🗿
+    </div>
+</div>
+
+<div class="deck">
+    <div id="img-preview"></div>
+    <div class="input-bar">
+        <label for="file-up" class="icon-btn"><i class="fas fa-image"></i></label>
+        <input type="file" id="file-up" hidden accept="image/*" onchange="handleUpload()">
+        
+        <input type="text" id="mainInput" placeholder="Ketik perintah untuk Dicko..." autocomplete="off">
+        
+        <div onclick="executeDicko()" class="icon-btn" style="color: var(--dicko-cyan);">
+            <i class="fas fa-paper-plane"></i>
+        </div>
+    </div>
+</div>
+
 <script>
-<!-- code by https://www.html-code-generator.com -->
-document.write(unescape('%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22id%22%3E%0A%3Chead%3E%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%20%20%20%20%3Ctitle%3EDICKO%20AI%20%7C%20Developed%20by%20DickoDevz%3C/title%3E%0A%20%20%20%20%3Clink%20href%3D%22https%3A//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css%22%20rel%3D%22stylesheet%22%3E%0A%20%20%20%20%3Cstyle%3E%0A%20%20%20%20%20%20%20%20%3Aroot%20%7B%20--blue%3A%20%232563eb%3B%20--cyan%3A%20%2300f3ff%3B%20--dark%3A%20%23090b10%3B%20--panel%3A%20%23161b22%3B%20--text%3A%20%23e6edf3%3B%20%7D%0A%20%20%20%20%20%20%20%20*%20%7B%20margin%3A%200%3B%20padding%3A%200%3B%20box-sizing%3A%20border-box%3B%20%7D%0A%20%20%20%20%20%20%20%20body%20%7B%20background%3A%20var%28--dark%29%3B%20color%3A%20var%28--text%29%3B%20font-family%3A%20%27Segoe%20UI%27%2C%20sans-serif%3B%20display%3A%20flex%3B%20flex-direction%3A%20column%3B%20height%3A%20100vh%3B%20overflow%3A%20hidden%3B%20%7D%0A%20%20%20%20%20%20%20%20.header%20%7B%20padding%3A%2010px%2020px%3B%20background%3A%20var%28--panel%29%3B%20border-bottom%3A%202px%20solid%20%2330363d%3B%20display%3A%20flex%3B%20align-items%3A%20center%3B%20justify-content%3A%20space-between%3B%20%7D%0A%20%20%20%20%20%20%20%20.logo-img%20%7B%20height%3A%2050px%3B%20filter%3A%20drop-shadow%280%200%208px%20rgba%280%2C%20243%2C%20255%2C%200.6%29%29%3B%20%7D%0A%20%20%20%20%20%20%20%20%23chat-flow%20%7B%20flex%3A%201%3B%20overflow-y%3A%20auto%3B%20padding%3A%2020px%3B%20display%3A%20flex%3B%20flex-direction%3A%20column%3B%20gap%3A%2015px%3B%20%7D%0A%20%20%20%20%20%20%20%20.bubble%20%7B%20max-width%3A%2085%25%3B%20padding%3A%2014px%3B%20border-radius%3A%2015px%3B%20font-size%3A%200.95rem%3B%20animation%3A%20pop%200.3s%20ease%3B%20%7D%0A%20%20%20%20%20%20%20%20.bot%20%7B%20background%3A%20%2321262d%3B%20align-self%3A%20flex-start%3B%20border-bottom-left-radius%3A%202px%3B%20border%3A%201px%20solid%20%2330363d%3B%20%7D%0A%20%20%20%20%20%20%20%20.user%20%7B%20background%3A%20var%28--blue%29%3B%20align-self%3A%20flex-end%3B%20border-bottom-right-radius%3A%202px%3B%20%7D%0A%20%20%20%20%20%20%20%20.deck%20%7B%20background%3A%20var%28--panel%29%3B%20padding%3A%2015px%2020px%3B%20border-top%3A%201px%20solid%20%2330363d%3B%20%7D%0A%20%20%20%20%20%20%20%20.bar%20%7B%20display%3A%20flex%3B%20align-items%3A%20center%3B%20background%3A%20%230d1117%3B%20border%3A%201px%20solid%20%2330363d%3B%20border-radius%3A%2025px%3B%20padding%3A%205px%2015px%3B%20%7D%0A%20%20%20%20%20%20%20%20input%20%7B%20flex%3A%201%3B%20background%3A%20transparent%3B%20border%3A%20none%3B%20color%3A%20white%3B%20padding%3A%2010px%3B%20outline%3A%20none%3B%20%7D%0A%20%20%20%20%20%20%20%20@keyframes%20pop%20%7B%20from%20%7B%20opacity%3A%200%3B%20transform%3A%20scale%280.9%29%3B%20%7D%20to%20%7B%20opacity%3A%201%3B%20transform%3A%20scale%281%29%3B%20%7D%20%7D%0A%20%20%20%20%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%0A%3Cheader%20class%3D%22header%22%3E%0A%20%20%20%20%3Cdiv%20style%3D%22display%3A%20flex%3B%20align-items%3A%20center%3B%20gap%3A%2015px%3B%22%3E%0A%20%20%20%20%20%20%20%20%3Cimg%20src%3D%22https%3A//i.ibb.co.com/RphpMMFF/IMG-20260501-235124.jpg%22%20class%3D%22logo-img%22%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ch2%20style%3D%22font-size%3A%201rem%3B%22%3EDICKO%20AI%3C/h2%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20style%3D%22font-size%3A%200.6rem%3B%20color%3A%20%238b949e%3B%22%3EBY%20DICKODEVZ%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%3C/header%3E%0A%0A%3Cdiv%20id%3D%22chat-flow%22%3E%0A%20%20%20%20%3Cdiv%20class%3D%22bubble%20bot%22%3ESistem%20Dicko%20AI%20aktif.%20Mau%20nanya%20apa%20lu%3F%20%uD83D%uDDFF%3C/div%3E%0A%3C/div%3E%0A%0A%3Cdiv%20class%3D%22deck%22%3E%0A%20%20%20%20%3Cdiv%20class%3D%22bar%22%3E%0A%20%20%20%20%20%20%20%20%3Cinput%20type%3D%22text%22%20id%3D%22mainInput%22%20placeholder%3D%22Ketik%20perintah...%22%20autocomplete%3D%22off%22%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20onclick%3D%22execute%28%29%22%20style%3D%22color%3Avar%28--cyan%29%3B%20cursor%3Apointer%3B%22%3E%3Ci%20class%3D%22fas%20fa-paper-plane%22%3E%3C/i%3E%3C/div%3E%0A%20%20%20%20%3C/div%3E%0A%3C/div%3E%0A%0A%3Cscript%3E%0A%20%20%20%20async%20function%20execute%28%29%20%7B%0A%20%20%20%20%20%20%20%20const%20input%20%3D%20document.getElementById%28%27mainInput%27%29%3B%0A%20%20%20%20%20%20%20%20const%20flow%20%3D%20document.getElementById%28%27chat-flow%27%29%3B%0A%20%20%20%20%20%20%20%20if%20%28%21input.value%29%20return%3B%0A%20%20%20%20%20%20%20%20const%20txt%20%3D%20input.value%3B%0A%20%20%20%20%20%20%20%20flow.innerHTML%20+%3D%20%60%3Cdiv%20class%3D%22bubble%20user%22%3E%24%7Btxt%7D%3C/div%3E%60%3B%0A%20%20%20%20%20%20%20%20input.value%20%3D%20%22%22%3B%0A%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20r%20%3D%20await%20fetch%28%60https%3A//api.nexray.eu.cc/ai/nexray%3Ftext%3D%24%7BencodeURIComponent%28txt%29%7D%60%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20d%20%3D%20await%20r.json%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20flow.innerHTML%20+%3D%20%60%3Cdiv%20class%3D%22bubble%20bot%22%3E%24%7Bd.result.replace%28/nexray/gi%2C%20%22Dicko%20AI%22%29%7D%3C/div%3E%60%3B%0A%20%20%20%20%20%20%20%20%7D%20catch%20%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20flow.innerHTML%20+%3D%20%60%3Cdiv%20class%3D%22bubble%20bot%22%3EServer%20down%2C%20Bos%21%3C/div%3E%60%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20flow.scrollTop%20%3D%20flow.scrollHeight%3B%0A%20%20%20%20%7D%0A%20%20%20%20document.getElementById%28%27mainInput%27%29.addEventListener%28%27keypress%27%2C%20%28e%29%20%3D%3E%20%7B%20if%28e.key%20%3D%3D%3D%20%27Enter%27%29%20execute%28%29%3B%20%7D%29%3B%0A%3C/script%3E%0A%0A%3C/body%3E%0A%3C/html%3E%0A'));
+    const chatFlow = document.getElementById('chat-flow');
+    const mainInput = document.getElementById('mainInput');
+    let capturedImg = "";
+
+    mainInput.addEventListener("keypress", (e) => { if (e.key === "Enter") executeDicko(); });
+
+    function handleUpload() {
+        const file = document.getElementById('file-up').files[0];
+        const preview = document.getElementById('img-preview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                capturedImg = e.target.result;
+                preview.innerHTML = `<img src="${capturedImg}" style="height:70px; border-radius:10px; border:2px solid var(--dicko-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);">`;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function executeDicko() {
+        const val = mainInput.value.trim();
+        if (!val && !capturedImg) return;
+
+        // Render User Message
+        let userBubble = `<div class="bubble user-style">`;
+        if (capturedImg) userBubble += `<img src="${capturedImg}" style="max-width:100%; border-radius:10px; margin-bottom:8px; border: 1px solid rgba(255,255,255,0.3);"><br>`;
+        userBubble += val + `</div>`;
+        chatFlow.innerHTML += userBubble;
+
+        // Reset
+        const prompt = val || "Analisis gambar ini";
+        mainInput.value = "";
+        capturedImg = "";
+        document.getElementById('img-preview').style.display = "none";
+        chatFlow.scrollTop = chatFlow.scrollHeight;
+
+        // AI Thinking
+        const dickoID = "dicko-" + Date.now();
+        chatFlow.innerHTML += `<div class="bubble bot-style" id="${dickoID}"><i>Dicko sedang memproses... <i class="fas fa-spinner fa-spin"></i></i></div>`;
+        chatFlow.scrollTop = chatFlow.scrollHeight;
+
+        try {
+            // URL API tetap, tapi diproses secara anonim
+            const proxy = `https://api.nexray.eu.cc/ai/nexray?text=${encodeURIComponent(prompt)}`;
+            const response = await fetch(proxy);
+            const data = await response.json();
+            
+            // Filter respon (Menghapus identitas NexRay jika ada di dalam teks balasan)
+            let finalResult = data.result.replace(/nexray/gi, "Dicko AI").replace(/elrayyxml/gi, "DickoDevz");
+            
+            document.getElementById(dickoID).innerHTML = finalResult;
+        } catch (err) {
+            document.getElementById(dickoID).innerText = "Gagal memproses data. Coba lagi, bos.";
+        }
+        chatFlow.scrollTop = chatFlow.scrollHeight;
+    }
 </script>
+
+</body>
+</html>
